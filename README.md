@@ -1,6 +1,6 @@
 
 <div align="center">
-    <h2>Hello, I'm Li Yang! <img src="https://github.com/salonigupta1/salonigupta1/blob/master/Assets/Hi.gif" width="29px"></h2>
+    <h2>Hello, I'm Dr. Li Yang! <img src="https://github.com/salonigupta1/salonigupta1/blob/master/Assets/Hi.gif" width="29px"></h2>
   </a>
 </div>
 <br>- 😄 I'm currently a Postdoctoral Associate and Sessional Instructor in the Electrical and Computer Engineering (ECE) Department at Western University, Canada. 
