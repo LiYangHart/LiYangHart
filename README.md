@@ -3,11 +3,12 @@
     <h2>Hello, I'm Dr. Li Yang! <img src="https://github.com/salonigupta1/salonigupta1/blob/master/Assets/Hi.gif" width="29px"></h2>
   </a>
 </div>
+<br>- 😄 I'm currently currently a Tenure-Track Assistant Professor in the Faculty of Business and IT at Ontario Tech University.
 <br>- 😄 I'm currently a Postdoctoral Associate and Sessional Instructor in the Electrical and Computer Engineering (ECE) Department at Western University, Canada. 
-<br>- 🌱 I've completed Ph.D. degree in Software Engineering - Electrical and Computer Engineering at Western University in Aug 2022. 
+<br>- 🌱 I've completed Ph.D. degree in Software Engineering - Electrical and Computer Engineering at Western University, Canada in Aug 2022. 
 <br>- 👯 I've been working on automated machine learning algorithms (e.g., machine learning, deep learning, optimization, online learning, and concept drift adaptation methods) to solve various data analytics problems, such as network security, intrusion detection, anomaly detection, IoT data stream analytics, network traffic data analytics, time-series analytics, etc.
 <br>- 👯 I've also been working on the tutorials on applying automated and optimized machine learning algorithms to general data analytics tasks.
-<br>- 🌱 My paper and code publications have received more than 1,600 Google Scholar citations and 2,000 GitHub stars. 
+<br>- 🌱 My paper and code publications have received more than 1,900 Google Scholar citations and 2,000 GitHub stars. 
 <br>
 <br>- PS: Below are the contributions of my personal GitHub account, not including my contributions to the organization account "Western OC2 Lab"
 <p align="center">
