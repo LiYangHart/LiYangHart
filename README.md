@@ -23,7 +23,7 @@ Please feel free to contact me for any questions or cooperation opportunities. I
 * Email: [liyanghart@gmail.com](mailto:liyanghart@gmail.com)
 * GitHub: [LiYangHart](https://github.com/LiYangHart) and [Western OC2 Lab](https://github.com/Western-OC2-Lab/)
 * LinkedIn: [Li Yang](https://www.linkedin.com/in/li-yang-phd-65a190176/)  
-* Google Scholar: [Li Yang](https://scholar.google.com.eg/citations?user=XEfM7bIAAAAJ&hl=en) and [OC2 Lab](https://scholar.google.com.eg/citations?user=oiebNboAAAAJ&hl=en)
+* Google Scholar: [Li Yang](https://scholar.google.com.eg/citations?user=XEfM7bIAAAAJ&hl=en)
 * Researchgate: [Li Yang](https://www.researchgate.net/profile/Li-Yang-301)
 
 <!--
