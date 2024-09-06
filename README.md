@@ -12,7 +12,7 @@
 <br>- 👯 I've also been working on the tutorials on applying automated and optimized machine learning algorithms to general data analytics tasks.
 <br>- 🌱 My paper and code publications have received more than 3,000 Google Scholar citations and 2,800 GitHub stars. 
 <br>
-<br>- PS: Below are the contributions of my personal GitHub account, not including my contributions to the organization account "Western OC2 Lab" and "https://github.com/ANTS-OntarioTechU"
+<br>- PS: Below are the contributions of my personal GitHub account, not including my contributions to the organization account "[Western OC2 Lab](https://github.com/Western-OC2-Lab)" and "[ANTS OntarioTechU](https://github.com/ANTS-OntarioTechU)"
 <p align="center">
   <img width="48%" src="https://github-readme-stats-sigma-five.vercel.app/api?username=LiYangHart&show_icons=true&theme=tokyonight" />
   <img width="48%" src="https://github-readme-streak-stats.herokuapp.com/?user=LiYangHart&theme=tokyonight" />
