@@ -11,7 +11,7 @@
 <br>- 🌱 I completed my Ph.D. degree in Software Engineering - Electrical and Computer Engineering at Western University, Canada, in Aug 2022, as a Top-3 graduate student with excellent research. 
 <br>- 👯 I've been working on automated machine learning algorithms (e.g., machine learning, deep learning, optimization, online learning, and concept drift adaptation methods) to solve various data analytics problems, such as network security, intrusion detection, anomaly detection, IoT data stream analytics, network traffic data analytics, time-series analytics, etc.
 <br>- 👯 I've also been working on the tutorials on applying automated and optimized machine learning algorithms to general data analytics tasks.
-<br>- 🌱 My paper and code publications have received more than 4,000 [Google Scholar](https://scholar.google.com.eg/citations?user=XEfM7bIAAAAJ&hl=en) citations and 3,000 GitHub stars (including my contributions to the organization accounts "[Western OC2 Lab](https://github.com/Western-OC2-Lab)" and "[ANTS OntarioTechU](https://github.com/ANTS-OntarioTechU)").
+<br>- 🌱 My paper and code publications have received more than 5,000 [Google Scholar](https://scholar.google.com.eg/citations?user=XEfM7bIAAAAJ&hl=en) citations and 3,000 GitHub stars (including my contributions to the organization accounts "[Western OC2 Lab](https://github.com/Western-OC2-Lab)" and "[ANTS OntarioTechU](https://github.com/ANTS-OntarioTechU)").
 <p align="center">
   <img width="48%" src="https://github-readme-stats-sigma-five.vercel.app/api?username=LiYangHart&show_icons=true&theme=tokyonight" />
 <!--   <img width="48%" src="https://github-readme-streak-stats.herokuapp.com/?user=LiYangHart&theme=tokyonight" /> -->
