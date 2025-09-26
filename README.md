@@ -7,7 +7,7 @@
 **[My Personal Website](https://sites.google.com/view/li-yang-phd/home?authuser=0)**
 
 <br>- 😄 I'm currently currently a Tenure-Track Assistant Professor in the Faculty of Business and IT at Ontario Tech University, and an Adjunct Research Professor at Western University.
-<br>- 👯 I'm included in Stanford University/Elsevier's List of the World's Top 2% Scientists. I am ranked among the world's Top 0.5% of researchers in 'Networking & Telecommunications' in 2024, and 52nd in Canada.
+<br>- 👯 I'm included in Stanford University/Elsevier's List of the World's Top 2% Scientists for 2024 and 2025. I am ranked among the world's Top 0.3% of researchers in 'Networking & Telecommunications' in 2025, and 27th in Canada.
 <br>- 🌱 I completed my Ph.D. degree in Software Engineering - Electrical and Computer Engineering at Western University, Canada, in Aug 2022, as a Top-3 graduate student with excellent research. 
 <br>- 👯 I've been working on automated machine learning algorithms (e.g., machine learning, deep learning, optimization, online learning, and concept drift adaptation methods) to solve various data analytics problems, such as network security, intrusion detection, anomaly detection, IoT data stream analytics, network traffic data analytics, time-series analytics, etc.
 <br>- 👯 I've also been working on the tutorials on applying automated and optimized machine learning algorithms to general data analytics tasks.
