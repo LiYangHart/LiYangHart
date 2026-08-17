@@ -1,8 +1,11 @@
-name: Update Total GitHub Stars
+name: Update GitHub Repository Impact
 
 on:
   workflow_dispatch:
   schedule:
+    # Run once every day.
+    # 17 is intentionally away from the start of the hour,
+    # when scheduled GitHub Actions can experience higher load.
     - cron: "17 5 * * *"
 
 permissions:
@@ -16,93 +19,301 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Calculate total GitHub stars
+      - name: Calculate stars and generate SVG
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python - <<'PY'
-          import os
+          python <<'PY'
           import json
+          import os
           import urllib.request
+          from pathlib import Path
+
+          USERNAME = "LiYangHart"
+          ORGANIZATION = "Western-OC2-Lab"
+
+          # ------------------------------------------------------------
+          # ORGANIZATION REPOSITORY SETTING
+          # ------------------------------------------------------------
+          # None = include ALL public, non-fork repositories owned by
+          # Western-OC2-Lab.
+          #
+          # If you later want to count only selected OC2 Lab repositories,
+          # replace None with something like:
+          #
+          # ORG_REPO_ALLOWLIST = {
+          #     "repo-name-1",
+          #     "repo-name-2",
+          #     "repo-name-3",
+          # }
+          # ------------------------------------------------------------
+          ORG_REPO_ALLOWLIST = None
+
+          token = os.environ["GH_TOKEN"]
 
           headers = {
-              "Authorization": f"Bearer {os.environ['GH_TOKEN']}",
+              "Authorization": f"Bearer {token}",
               "Accept": "application/vnd.github+json",
-              "X-GitHub-Api-Version": "2022-11-28",
-              "User-Agent": "LiYangHart-star-counter"
+              "User-Agent": "LiYangHart-GitHub-Star-Card",
           }
 
-          def get_repos(base_url):
-              repos = []
+
+          def fetch_all_repositories(url):
+              """Fetch every page returned by a GitHub repository endpoint."""
+              repositories = []
               page = 1
 
               while True:
-                  separator = "&" if "?" in base_url else "?"
-                  url = f"{base_url}{separator}per_page=100&page={page}"
+                  separator = "&" if "?" in url else "?"
+                  paged_url = (
+                      f"{url}{separator}per_page=100&page={page}"
+                  )
 
-                  req = urllib.request.Request(url, headers=headers)
+                  request = urllib.request.Request(
+                      paged_url,
+                      headers=headers
+                  )
 
-                  with urllib.request.urlopen(req) as response:
+                  with urllib.request.urlopen(request) as response:
                       data = json.load(response)
 
-                  repos.extend(data)
+                  if not data:
+                      break
+
+                  repositories.extend(data)
 
                   if len(data) < 100:
                       break
 
                   page += 1
 
-              return repos
+              return repositories
 
-          personal_repos = get_repos(
-              "https://api.github.com/users/LiYangHart/repos?type=owner"
+
+          # ------------------------------------------------------------
+          # Fetch personal repositories
+          # ------------------------------------------------------------
+          personal_repositories = fetch_all_repositories(
+              f"https://api.github.com/users/{USERNAME}/repos"
+              "?type=owner&sort=full_name"
           )
 
-          organization_repos = get_repos(
-              "https://api.github.com/orgs/Western-OC2-Lab/repos?type=public"
-          )
+          # Only public non-fork repositories are counted.
+          personal_repositories = [
+              repo
+              for repo in personal_repositories
+              if not repo.get("fork", False)
+          ]
 
-          # Exclude forks so the metric represents repositories
-          # created/maintained under your accounts rather than forked projects.
           personal_stars = sum(
-              repo["stargazers_count"]
-              for repo in personal_repos
-              if not repo["fork"]
+              repo.get("stargazers_count", 0)
+              for repo in personal_repositories
           )
+
+
+          # ------------------------------------------------------------
+          # Fetch organization repositories
+          # ------------------------------------------------------------
+          organization_repositories = fetch_all_repositories(
+              f"https://api.github.com/orgs/{ORGANIZATION}/repos"
+              "?type=public&sort=full_name"
+          )
+
+          organization_repositories = [
+              repo
+              for repo in organization_repositories
+              if not repo.get("fork", False)
+          ]
+
+          if ORG_REPO_ALLOWLIST is not None:
+              organization_repositories = [
+                  repo
+                  for repo in organization_repositories
+                  if repo["name"] in ORG_REPO_ALLOWLIST
+              ]
 
           organization_stars = sum(
-              repo["stargazers_count"]
-              for repo in organization_repos
-              if not repo["fork"]
+              repo.get("stargazers_count", 0)
+              for repo in organization_repositories
           )
 
+
+          # ------------------------------------------------------------
+          # Calculate total
+          # ------------------------------------------------------------
           total_stars = personal_stars + organization_stars
 
-          print(f"Personal stars: {personal_stars}")
-          print(f"Organization stars: {organization_stars}")
-          print(f"Total stars: {total_stars}")
+          print(
+              f"Personal: {personal_stars:,} stars "
+              f"across {len(personal_repositories)} repositories"
+          )
 
-          badge = {
-              "schemaVersion": 1,
-              "label": "Total GitHub Stars",
-              "message": f"{total_stars:,}",
-              "color": "bf91f3"
-          }
+          print(
+              f"OC2 Lab: {organization_stars:,} stars "
+              f"across {len(organization_repositories)} repositories"
+          )
 
-          with open("github-stars.json", "w") as f:
-              json.dump(badge, f)
+          print(f"Total: {total_stars:,} stars")
+
+
+          # ------------------------------------------------------------
+          # Generate GitHub README SVG card
+          # Theme inspired by github-readme-stats Tokyo Night
+          # ------------------------------------------------------------
+          svg = f'''<svg
+            width="495"
+            height="195"
+            viewBox="0 0 495 195"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-labelledby="title desc"
+          >
+            <title id="title">GitHub Repository Impact</title>
+            <desc id="desc">
+              {total_stars:,} total GitHub stars:
+              {personal_stars:,} personal stars and
+              {organization_stars:,} OC2 Lab stars.
+            </desc>
+
+            <style>
+              .header {{
+                font: 600 18px
+                  -apple-system,
+                  BlinkMacSystemFont,
+                  "Segoe UI",
+                  Helvetica,
+                  Arial,
+                  sans-serif;
+                fill: #70a5fd;
+              }}
+
+              .total {{
+                font: 700 28px
+                  -apple-system,
+                  BlinkMacSystemFont,
+                  "Segoe UI",
+                  Helvetica,
+                  Arial,
+                  sans-serif;
+                fill: #bf91f3;
+              }}
+
+              .label {{
+                font: 500 15px
+                  -apple-system,
+                  BlinkMacSystemFont,
+                  "Segoe UI",
+                  Helvetica,
+                  Arial,
+                  sans-serif;
+                fill: #38bdae;
+              }}
+
+              .value {{
+                font: 600 15px
+                  -apple-system,
+                  BlinkMacSystemFont,
+                  "Segoe UI",
+                  Helvetica,
+                  Arial,
+                  sans-serif;
+                fill: #f8f8f2;
+              }}
+            </style>
+
+            <rect
+              x="0.5"
+              y="0.5"
+              width="494"
+              height="194"
+              rx="10"
+              fill="#1a1b27"
+              stroke="#30363d"
+            />
+
+            <!-- Header -->
+            <text
+              x="24"
+              y="37"
+              class="header"
+            >★ GitHub Repository Impact</text>
+
+            <!-- Total Stars -->
+            <text
+              x="247.5"
+              y="91"
+              text-anchor="middle"
+              class="total"
+            >{total_stars:,} Total Stars</text>
+
+            <!-- Divider -->
+            <line
+              x1="24"
+              y1="112"
+              x2="471"
+              y2="112"
+              stroke="#30363d"
+              stroke-width="1"
+            />
+
+            <!-- Personal -->
+            <text
+              x="32"
+              y="143"
+              class="label"
+            >Personal</text>
+
+            <text
+              x="455"
+              y="143"
+              text-anchor="end"
+              class="value"
+            >{personal_stars:,}</text>
+
+            <!-- OC2 Lab -->
+            <text
+              x="32"
+              y="172"
+              class="label"
+            >OC2 Lab</text>
+
+            <text
+              x="455"
+              y="172"
+              text-anchor="end"
+              class="value"
+            >{organization_stars:,}</text>
+          </svg>
+          '''
+
+          output_directory = Path("assets")
+          output_directory.mkdir(exist_ok=True)
+
+          output_file = (
+              output_directory /
+              "github-repository-impact.svg"
+          )
+
+          output_file.write_text(
+              svg,
+              encoding="utf-8"
+          )
+
+          print(f"Generated: {output_file}")
           PY
 
-      - name: Commit updated star count
+      - name: Commit updated card
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add github-stars.json
+          git add assets/github-repository-impact.svg
 
           if git diff --cached --quiet; then
-            echo "No star count change."
+            echo "GitHub star counts have not changed."
           else
-            git commit -m "chore: update total GitHub stars"
+            git commit -m "chore: update GitHub repository impact"
             git push
           fi
