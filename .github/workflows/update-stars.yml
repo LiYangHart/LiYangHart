@@ -3,9 +3,6 @@ name: Update GitHub Repository Impact
 on:
   workflow_dispatch:
   schedule:
-    # Run once every day.
-    # 17 is intentionally away from the start of the hour,
-    # when scheduled GitHub Actions can experience higher load.
     - cron: "17 5 * * *"
 
 permissions:
@@ -30,43 +27,65 @@ jobs:
           from pathlib import Path
 
           USERNAME = "LiYangHart"
-          ORGANIZATION = "Western-OC2-Lab"
 
-          # ------------------------------------------------------------
-          # ORGANIZATION REPOSITORY SETTING
-          # ------------------------------------------------------------
-          # None = include ALL public, non-fork repositories owned by
-          # Western-OC2-Lab.
+          OC2_ORGANIZATION = "Western-OC2-Lab"
+          ANTS_ORGANIZATION = "ANTS-OntarioTechU"
+
+
+          # ============================================================
+          # ORGANIZATION REPOSITORY SETTINGS
+          # ============================================================
           #
-          # If you later want to count only selected OC2 Lab repositories,
-          # replace None with something like:
+          # None = count ALL public, non-fork repositories
+          # in that organization.
           #
-          # ORG_REPO_ALLOWLIST = {
+          # If some repositories in an organization are NOT yours,
+          # replace None with an explicit set of your repository names.
+          #
+          # Example:
+          #
+          # OC2_REPO_ALLOWLIST = {
           #     "repo-name-1",
           #     "repo-name-2",
-          #     "repo-name-3",
           # }
-          # ------------------------------------------------------------
-          ORG_REPO_ALLOWLIST = None
+          #
+          # ANTS_REPO_ALLOWLIST = {
+          #     "repo-name-3",
+          #     "repo-name-4",
+          # }
+          #
+          # ============================================================
+
+          OC2_REPO_ALLOWLIST = None
+
+          ANTS_REPO_ALLOWLIST = None
+
 
           token = os.environ["GH_TOKEN"]
 
           headers = {
               "Authorization": f"Bearer {token}",
               "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
               "User-Agent": "LiYangHart-GitHub-Star-Card",
           }
 
 
           def fetch_all_repositories(url):
-              """Fetch every page returned by a GitHub repository endpoint."""
+              """
+              Fetch all repositories returned by a GitHub REST API
+              repository-list endpoint, including pagination.
+              """
+
               repositories = []
               page = 1
 
               while True:
                   separator = "&" if "?" in url else "?"
+
                   paged_url = (
-                      f"{url}{separator}per_page=100&page={page}"
+                      f"{url}{separator}"
+                      f"per_page=100&page={page}"
                   )
 
                   request = urllib.request.Request(
@@ -90,93 +109,152 @@ jobs:
               return repositories
 
 
-          # ------------------------------------------------------------
-          # Fetch personal repositories
-          # ------------------------------------------------------------
+          def calculate_stars(repositories, allowlist=None):
+              """
+              Count stars from public, non-fork repositories.
+
+              If allowlist is provided, only repositories whose names
+              appear in the allowlist are counted.
+              """
+
+              repositories = [
+                  repo
+                  for repo in repositories
+                  if not repo.get("fork", False)
+                  and not repo.get("private", False)
+              ]
+
+              if allowlist is not None:
+                  repositories = [
+                      repo
+                      for repo in repositories
+                      if repo["name"] in allowlist
+                  ]
+
+              stars = sum(
+                  repo.get("stargazers_count", 0)
+                  for repo in repositories
+              )
+
+              return stars, repositories
+
+
+          # ============================================================
+          # 1. PERSONAL REPOSITORIES
+          # ============================================================
+
           personal_repositories = fetch_all_repositories(
               f"https://api.github.com/users/{USERNAME}/repos"
               "?type=owner&sort=full_name"
           )
 
-          # Only public non-fork repositories are counted.
-          personal_repositories = [
-              repo
-              for repo in personal_repositories
-              if not repo.get("fork", False)
-          ]
-
-          personal_stars = sum(
-              repo.get("stargazers_count", 0)
-              for repo in personal_repositories
+          personal_stars, personal_repositories = calculate_stars(
+              personal_repositories
           )
 
 
-          # ------------------------------------------------------------
-          # Fetch organization repositories
-          # ------------------------------------------------------------
-          organization_repositories = fetch_all_repositories(
-              f"https://api.github.com/orgs/{ORGANIZATION}/repos"
+          # ============================================================
+          # 2. WESTERN OC2 LAB REPOSITORIES
+          # ============================================================
+
+          oc2_repositories = fetch_all_repositories(
+              f"https://api.github.com/orgs/{OC2_ORGANIZATION}/repos"
               "?type=public&sort=full_name"
           )
 
-          organization_repositories = [
-              repo
-              for repo in organization_repositories
-              if not repo.get("fork", False)
-          ]
-
-          if ORG_REPO_ALLOWLIST is not None:
-              organization_repositories = [
-                  repo
-                  for repo in organization_repositories
-                  if repo["name"] in ORG_REPO_ALLOWLIST
-              ]
-
-          organization_stars = sum(
-              repo.get("stargazers_count", 0)
-              for repo in organization_repositories
+          oc2_stars, oc2_repositories = calculate_stars(
+              oc2_repositories,
+              OC2_REPO_ALLOWLIST
           )
 
 
-          # ------------------------------------------------------------
-          # Calculate total
-          # ------------------------------------------------------------
-          total_stars = personal_stars + organization_stars
+          # ============================================================
+          # 3. ONTARIO TECH ANTS LAB REPOSITORIES
+          # ============================================================
+
+          ants_repositories = fetch_all_repositories(
+              f"https://api.github.com/orgs/{ANTS_ORGANIZATION}/repos"
+              "?type=public&sort=full_name"
+          )
+
+          ants_stars, ants_repositories = calculate_stars(
+              ants_repositories,
+              ANTS_REPO_ALLOWLIST
+          )
+
+
+          # ============================================================
+          # TOTAL
+          # ============================================================
+
+          total_stars = (
+              personal_stars
+              + oc2_stars
+              + ants_stars
+          )
+
+
+          # ============================================================
+          # OUTPUT DETAILS TO GITHUB ACTION LOG
+          # ============================================================
+
+          print("=" * 60)
 
           print(
-              f"Personal: {personal_stars:,} stars "
+              f"Personal ({USERNAME}): "
+              f"{personal_stars:,} stars "
               f"across {len(personal_repositories)} repositories"
           )
 
           print(
-              f"OC2 Lab: {organization_stars:,} stars "
-              f"across {len(organization_repositories)} repositories"
+              f"OC2 Lab ({OC2_ORGANIZATION}): "
+              f"{oc2_stars:,} stars "
+              f"across {len(oc2_repositories)} repositories"
           )
 
-          print(f"Total: {total_stars:,} stars")
+          print(
+              f"ANTS Lab ({ANTS_ORGANIZATION}): "
+              f"{ants_stars:,} stars "
+              f"across {len(ants_repositories)} repositories"
+          )
+
+          print("-" * 60)
+
+          print(
+              f"TOTAL: {total_stars:,} stars"
+          )
+
+          print("=" * 60)
 
 
-          # ------------------------------------------------------------
-          # Generate GitHub README SVG card
-          # Theme inspired by github-readme-stats Tokyo Night
-          # ------------------------------------------------------------
+          # ============================================================
+          # GENERATE SVG CARD
+          # ============================================================
+
           svg = f'''<svg
             width="495"
-            height="195"
-            viewBox="0 0 495 195"
+            height="225"
+            viewBox="0 0 495 225"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             role="img"
             aria-labelledby="title desc"
           >
-            <title id="title">GitHub Repository Impact</title>
+
+            <title id="title">
+              GitHub Repository Impact
+            </title>
+
             <desc id="desc">
               {total_stars:,} total GitHub stars:
-              {personal_stars:,} personal stars and
-              {organization_stars:,} OC2 Lab stars.
+              {personal_stars:,} personal stars,
+              {oc2_stars:,} OC2 Lab stars,
+              and {ants_stars:,} ANTS Lab stars.
             </desc>
 
+
             <style>
+
               .header {{
                 font: 600 18px
                   -apple-system,
@@ -220,26 +298,34 @@ jobs:
                   sans-serif;
                 fill: #f8f8f2;
               }}
+
             </style>
+
+
+            <!-- Background -->
 
             <rect
               x="0.5"
               y="0.5"
               width="494"
-              height="194"
+              height="224"
               rx="10"
               fill="#1a1b27"
               stroke="#30363d"
             />
 
+
             <!-- Header -->
+
             <text
               x="24"
               y="37"
               class="header"
             >★ GitHub Repository Impact</text>
 
+
             <!-- Total Stars -->
+
             <text
               x="247.5"
               y="91"
@@ -247,7 +333,9 @@ jobs:
               class="total"
             >{total_stars:,} Total Stars</text>
 
+
             <!-- Divider -->
+
             <line
               x1="24"
               y1="112"
@@ -257,7 +345,9 @@ jobs:
               stroke-width="1"
             />
 
+
             <!-- Personal -->
+
             <text
               x="32"
               y="143"
@@ -271,7 +361,9 @@ jobs:
               class="value"
             >{personal_stars:,}</text>
 
+
             <!-- OC2 Lab -->
+
             <text
               x="32"
               y="172"
@@ -283,16 +375,38 @@ jobs:
               y="172"
               text-anchor="end"
               class="value"
-            >{organization_stars:,}</text>
+            >{oc2_stars:,}</text>
+
+
+            <!-- ANTS Lab -->
+
+            <text
+              x="32"
+              y="201"
+              class="label"
+            >ANTS Lab</text>
+
+            <text
+              x="455"
+              y="201"
+              text-anchor="end"
+              class="value"
+            >{ants_stars:,}</text>
+
           </svg>
           '''
+
+
+          # ============================================================
+          # SAVE SVG
+          # ============================================================
 
           output_directory = Path("assets")
           output_directory.mkdir(exist_ok=True)
 
           output_file = (
-              output_directory /
-              "github-repository-impact.svg"
+              output_directory
+              / "github-repository-impact.svg"
           )
 
           output_file.write_text(
@@ -300,8 +414,12 @@ jobs:
               encoding="utf-8"
           )
 
-          print(f"Generated: {output_file}")
+          print(
+              f"Generated card: {output_file}"
+          )
+
           PY
+
 
       - name: Commit updated card
         run: |
@@ -314,6 +432,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "GitHub star counts have not changed."
           else
-            git commit -m "chore: update GitHub repository impact"
+            git commit \
+              -m "chore: update GitHub repository impact"
             git push
           fi
