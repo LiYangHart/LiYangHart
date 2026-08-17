@@ -18,11 +18,6 @@
 <p align="center">
   <img
     width="48%"
-    src="https://github-readme-stats-sigma-five.vercel.app/api?username=LiYangHart&show_icons=true&theme=tokyonight"
-    alt="Li Yang's GitHub Stats"
-  />
-  <img
-    width="48%"
     src="https://raw.githubusercontent.com/LiYangHart/LiYangHart/main/assets/github-repository-impact.svg"
     alt="GitHub Repository Impact"
   />
