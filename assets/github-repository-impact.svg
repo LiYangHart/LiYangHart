@@ -1,20 +1,27 @@
 <svg
   width="495"
-  height="195"
-  viewBox="0 0 495 195"
+  height="225"
+  viewBox="0 0 495 225"
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
   role="img"
   aria-labelledby="title desc"
 >
-  <title id="title">GitHub Repository Impact</title>
+
+  <title id="title">
+    GitHub Repository Impact
+  </title>
+
   <desc id="desc">
-    3,446 total GitHub stars:
-    1,345 personal stars and
-    2,101 OC2 Lab stars.
+    3,449 total GitHub stars:
+    1,346 personal stars,
+    2,101 OC2 Lab stars,
+    and 2 ANTS Lab stars.
   </desc>
 
+
   <style>
+
     .header {
       font: 600 18px
         -apple-system,
@@ -58,34 +65,44 @@
         sans-serif;
       fill: #f8f8f2;
     }
+
   </style>
+
+
+  <!-- Background -->
 
   <rect
     x="0.5"
     y="0.5"
     width="494"
-    height="194"
+    height="224"
     rx="10"
     fill="#1a1b27"
     stroke="#30363d"
   />
 
+
   <!-- Header -->
+
   <text
     x="24"
     y="37"
     class="header"
   >★ GitHub Repository Impact</text>
 
+
   <!-- Total Stars -->
+
   <text
     x="247.5"
     y="91"
     text-anchor="middle"
     class="total"
-  >3,446 Total Stars</text>
+  >3,449 Total Stars</text>
+
 
   <!-- Divider -->
+
   <line
     x1="24"
     y1="112"
@@ -95,7 +112,9 @@
     stroke-width="1"
   />
 
+
   <!-- Personal -->
+
   <text
     x="32"
     y="143"
@@ -107,9 +126,11 @@
     y="143"
     text-anchor="end"
     class="value"
-  >1,345</text>
+  >1,346</text>
+
 
   <!-- OC2 Lab -->
+
   <text
     x="32"
     y="172"
@@ -122,4 +143,21 @@
     text-anchor="end"
     class="value"
   >2,101</text>
+
+
+  <!-- ANTS Lab -->
+
+  <text
+    x="32"
+    y="201"
+    class="label"
+  >ANTS Lab</text>
+
+  <text
+    x="455"
+    y="201"
+    text-anchor="end"
+    class="value"
+  >2</text>
+
 </svg>
