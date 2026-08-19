@@ -15,12 +15,22 @@
 <br>- 👯 I've also been working on the tutorials on applying automated and optimized machine learning algorithms to general data analytics tasks.
 <br>- 👯 I've also an Associate Editor of **IEEE Transactions on Industrial Informatics (TII)** and **IEEE Transactions on Network and Service Management (TNSM)**.
 <br>- 🌱 My paper and code publications have received more than **6,000** [**Google Scholar**](https://scholar.google.com.eg/citations?user=XEfM7bIAAAAJ&hl=en) **citations** and **3,000 GitHub stars** (including my contributions to the organization accounts "[Western OC2 Lab](https://github.com/Western-OC2-Lab)" and "[ANTS OntarioTechU](https://github.com/ANTS-OntarioTechU)").
+
 <p align="center">
-  <img
-    width="48%"
-    src="https://raw.githubusercontent.com/LiYangHart/LiYangHart/main/assets/github-repository-impact.svg"
-    alt="GitHub Repository Impact"
-  />
+  <a href="https://scholar.google.com/citations?user=XEfM7bIAAAAJ&hl=en">
+    <img
+      width="48%"
+      src="https://raw.githubusercontent.com/LiYangHart/LiYangHart/main/assets/google-scholar-impact.svg"
+      alt="Google Scholar Impact"
+    />
+  </a>
+  <a href="https://github.com/LiYangHart">
+    <img
+      width="48%"
+      src="https://raw.githubusercontent.com/LiYangHart/LiYangHart/main/assets/github-repository-impact.svg"
+      alt="GitHub Repository Impact"
+    />
+  </a>
 </p>
 
 ## Contact-Info
