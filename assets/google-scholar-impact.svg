@@ -1,0 +1,124 @@
+<svg
+      width="495"
+      height="225"
+      viewBox="0 0 495 225"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-labelledby="scholar-title scholar-desc"
+    >
+
+      <title id="scholar-title">
+        Google Scholar Impact
+      </title>
+
+      <desc id="scholar-desc">
+        6,699 Google Scholar citations.
+      </desc>
+
+      <style>
+        .header {
+          font: 600 18px
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Helvetica,
+            Arial,
+            sans-serif;
+          fill: #70a5fd;
+        }
+
+        .total {
+          font: 700 28px
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Helvetica,
+            Arial,
+            sans-serif;
+          fill: #bf91f3;
+        }
+
+        .label {
+          font: 500 15px
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Helvetica,
+            Arial,
+            sans-serif;
+          fill: #38bdae;
+        }
+
+        .value {
+          font: 600 15px
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Helvetica,
+            Arial,
+            sans-serif;
+          fill: #f8f8f2;
+        }
+      </style>
+
+      <rect
+        x="0.5"
+        y="0.5"
+        width="494"
+        height="224"
+        rx="10"
+        fill="#1a1b27"
+        stroke="#30363d"
+      />
+
+      <text
+        x="24"
+        y="37"
+        class="header"
+      >Google Scholar Impact</text>
+
+      <text
+        x="247.5"
+        y="105"
+        text-anchor="middle"
+        class="total"
+      >6,699 Citations</text>
+
+      <line
+        x1="24"
+        y1="130"
+        x2="471"
+        y2="130"
+        stroke="#30363d"
+        stroke-width="1"
+      />
+
+      <text
+        x="32"
+        y="170"
+        class="label"
+      >Profile</text>
+
+      <text
+        x="455"
+        y="170"
+        text-anchor="end"
+        class="value"
+      >Google Scholar</text>
+
+      <text
+        x="32"
+        y="199"
+        class="label"
+      >Researcher</text>
+
+      <text
+        x="455"
+        y="199"
+        text-anchor="end"
+        class="value"
+      >Li Yang</text>
+
+    </svg>
+    
