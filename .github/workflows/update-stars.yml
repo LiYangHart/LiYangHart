@@ -30,6 +30,7 @@ jobs:
 
           OC2_ORGANIZATION = "Western-OC2-Lab"
           ANTS_ORGANIZATION = "ANTS-OntarioTechU"
+          SCHOLAR_ID = "XEfM7bIAAAAJ"
 
 
           # ============================================================
@@ -195,6 +196,57 @@ jobs:
 
 
           # ============================================================
+          # GOOGLE SCHOLAR CITATIONS
+          # ============================================================
+
+          def fetch_google_scholar_citations():
+              """
+              Retrieve the current Google Scholar citation count.
+
+              A temporary Scholar/badge-service failure should not stop
+              the GitHub repository card from being updated.
+              """
+
+              url = (
+                  "https://google-scholar-badge.vercel.app/"
+                  f"citations?user={SCHOLAR_ID}"
+              )
+
+              request = urllib.request.Request(
+                  url,
+                  headers={"User-Agent": "Mozilla/5.0"}
+              )
+
+              try:
+                  with urllib.request.urlopen(
+                      request,
+                      timeout=30
+                  ) as response:
+                      data = json.load(response)
+
+                  message = str(
+                      data.get("message", "")
+                  ).replace(",", "").strip()
+
+                  if not message.isdigit():
+                      raise ValueError(
+                          f"Unexpected Scholar response: {data}"
+                      )
+
+                  return int(message)
+
+              except Exception as exc:
+                  print(
+                      "Warning: Google Scholar citations could not "
+                      f"be updated: {exc}"
+                  )
+                  return None
+
+
+          scholar_citations = fetch_google_scholar_citations()
+
+
+          # ============================================================
           # OUTPUT DETAILS TO GITHUB ACTION LOG
           # ============================================================
 
@@ -223,6 +275,11 @@ jobs:
           print(
               f"TOTAL: {total_stars:,} stars"
           )
+
+          if scholar_citations is not None:
+              print(
+                  f"Google Scholar: {scholar_citations:,} citations"
+              )
 
           print("=" * 60)
 
@@ -418,6 +475,151 @@ jobs:
               f"Generated card: {output_file}"
           )
 
+
+          # ============================================================
+          # GENERATE GOOGLE SCHOLAR SVG CARD
+          # ============================================================
+
+          if scholar_citations is not None:
+              scholar_svg = f'''<svg
+                width="495"
+                height="225"
+                viewBox="0 0 495 225"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                role="img"
+                aria-labelledby="scholar-title scholar-desc"
+              >
+
+                <title id="scholar-title">
+                  Google Scholar Impact
+                </title>
+
+                <desc id="scholar-desc">
+                  {scholar_citations:,} Google Scholar citations.
+                </desc>
+
+                <style>
+                  .header {{
+                    font: 600 18px
+                      -apple-system,
+                      BlinkMacSystemFont,
+                      "Segoe UI",
+                      Helvetica,
+                      Arial,
+                      sans-serif;
+                    fill: #70a5fd;
+                  }}
+
+                  .total {{
+                    font: 700 28px
+                      -apple-system,
+                      BlinkMacSystemFont,
+                      "Segoe UI",
+                      Helvetica,
+                      Arial,
+                      sans-serif;
+                    fill: #bf91f3;
+                  }}
+
+                  .label {{
+                    font: 500 15px
+                      -apple-system,
+                      BlinkMacSystemFont,
+                      "Segoe UI",
+                      Helvetica,
+                      Arial,
+                      sans-serif;
+                    fill: #38bdae;
+                  }}
+
+                  .value {{
+                    font: 600 15px
+                      -apple-system,
+                      BlinkMacSystemFont,
+                      "Segoe UI",
+                      Helvetica,
+                      Arial,
+                      sans-serif;
+                    fill: #f8f8f2;
+                  }}
+                </style>
+
+                <rect
+                  x="0.5"
+                  y="0.5"
+                  width="494"
+                  height="224"
+                  rx="10"
+                  fill="#1a1b27"
+                  stroke="#30363d"
+                />
+
+                <text
+                  x="24"
+                  y="37"
+                  class="header"
+                >Google Scholar Impact</text>
+
+                <text
+                  x="247.5"
+                  y="105"
+                  text-anchor="middle"
+                  class="total"
+                >{scholar_citations:,} Citations</text>
+
+                <line
+                  x1="24"
+                  y1="130"
+                  x2="471"
+                  y2="130"
+                  stroke="#30363d"
+                  stroke-width="1"
+                />
+
+                <text
+                  x="32"
+                  y="170"
+                  class="label"
+                >Profile</text>
+
+                <text
+                  x="455"
+                  y="170"
+                  text-anchor="end"
+                  class="value"
+                >Google Scholar</text>
+
+                <text
+                  x="32"
+                  y="199"
+                  class="label"
+                >Researcher</text>
+
+                <text
+                  x="455"
+                  y="199"
+                  text-anchor="end"
+                  class="value"
+                >Li Yang</text>
+
+              </svg>
+              '''
+
+              scholar_output_file = (
+                  output_directory
+                  / "google-scholar-impact.svg"
+              )
+
+              scholar_output_file.write_text(
+                  scholar_svg,
+                  encoding="utf-8"
+              )
+
+              print(
+                  f"Generated Scholar card: {scholar_output_file}"
+              )
+
           PY
 
 
@@ -428,6 +630,10 @@ jobs:
             "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add assets/github-repository-impact.svg
+
+          if [ -f assets/google-scholar-impact.svg ]; then
+            git add assets/google-scholar-impact.svg
+          fi
 
           if git diff --cached --quiet; then
             echo "GitHub star counts have not changed."
