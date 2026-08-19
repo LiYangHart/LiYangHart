@@ -19,11 +19,13 @@ jobs:
       - name: Calculate stars and generate SVG
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
         run: |
           python <<'PY'
           import json
           import os
           import urllib.request
+          import urllib.parse
           from pathlib import Path
 
           USERNAME = "LiYangHart"
@@ -203,10 +205,66 @@ jobs:
               """
               Retrieve the current Google Scholar citation count.
 
-              A temporary Scholar/badge-service failure should not stop
-              the GitHub repository card from being updated.
+              Primary source: SerpApi Google Scholar Author API using the
+              SERPAPI_KEY GitHub Actions secret.
+
+              Fallback: the existing public Google Scholar badge endpoint.
               """
 
+              serpapi_key = os.environ.get("SERPAPI_KEY", "").strip()
+
+              # Primary: SerpApi Google Scholar Author API
+              if serpapi_key:
+                  try:
+                      params = urllib.parse.urlencode({
+                          "engine": "google_scholar_author",
+                          "author_id": SCHOLAR_ID,
+                          "hl": "en",
+                          "api_key": serpapi_key,
+                      })
+
+                      url = f"https://serpapi.com/search.json?{params}"
+
+                      request = urllib.request.Request(
+                          url,
+                          headers={"User-Agent": "LiYangHart-GitHub-Star-Card"}
+                      )
+
+                      with urllib.request.urlopen(
+                          request,
+                          timeout=30
+                      ) as response:
+                          data = json.load(response)
+
+                      if data.get("error"):
+                          raise RuntimeError(data["error"])
+
+                      citation_table = (
+                          data.get("cited_by", {})
+                          .get("table", [])
+                      )
+
+                      for row in citation_table:
+                          citations = row.get("citations")
+                          if citations and "all" in citations:
+                              return int(citations["all"])
+
+                      raise ValueError(
+                          "SerpApi response did not contain total citations."
+                      )
+
+                  except Exception as exc:
+                      print(
+                          "Warning: SerpApi Scholar lookup failed: "
+                          f"{exc}"
+                      )
+              else:
+                  print(
+                      "Warning: SERPAPI_KEY is not configured; "
+                      "trying the public Scholar badge endpoint."
+                  )
+
+              # Fallback: existing public badge endpoint
               url = (
                   "https://google-scholar-badge.vercel.app/"
                   f"citations?user={SCHOLAR_ID}"
