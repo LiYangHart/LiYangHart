@@ -14,8 +14,8 @@
 
   <desc id="desc">
     3,455 total GitHub stars:
-    1,351 personal stars,
-    2,101 OC2 Lab stars,
+    1,350 personal stars,
+    2,102 OC2 Lab stars,
     and 3 ANTS Lab stars.
   </desc>
 
@@ -126,7 +126,7 @@
     y="143"
     text-anchor="end"
     class="value"
-  >1,351</text>
+  >1,350</text>
 
 
   <!-- OC2 Lab -->
@@ -142,7 +142,7 @@
     y="172"
     text-anchor="end"
     class="value"
-  >2,101</text>
+  >2,102</text>
 
 
   <!-- ANTS Lab -->
